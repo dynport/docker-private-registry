@@ -1,16 +1,15 @@
 package main
 
 import (
-	"io/ioutil"
 	"bytes"
-	"testing"
 	"github.com/remogatto/prettytest"
-	"regexp"
-	"os"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"regexp"
+	"testing"
 )
-
 
 type testSuite struct {
 	prettytest.Suite
@@ -69,7 +68,7 @@ func (t *testSuite) TestWriteImageResource() {
 	defer ser.Close()
 
 	reader := bytes.NewReader([]byte("content"))
-	req, _ := http.NewRequest("PUT", ser.URL + "/v1/images/1234/json", reader)
+	req, _ := http.NewRequest("PUT", ser.URL+"/v1/images/1234/json", reader)
 	client := http.Client{}
 	rsp, _ := client.Do(req)
 
@@ -88,7 +87,7 @@ func (t *testSuite) TestPutRepositoryTag() {
 	defer ser.Close()
 
 	reader := bytes.NewReader([]byte("thetag"))
-	req, _ := http.NewRequest("PUT", ser.URL + "/v1/repositories/dynport/test/tags/latest", reader)
+	req, _ := http.NewRequest("PUT", ser.URL+"/v1/repositories/dynport/test/tags/latest", reader)
 	client := http.Client{}
 	rsp, _ := client.Do(req)
 
@@ -107,7 +106,7 @@ func (t *testSuite) TestPutRepositoryImages() {
 	defer ser.Close()
 
 	reader := bytes.NewReader([]byte("imagesdata"))
-	req, _ := http.NewRequest("PUT", ser.URL + "/v1/repositories/dynport/test/images", reader)
+	req, _ := http.NewRequest("PUT", ser.URL+"/v1/repositories/dynport/test/images", reader)
 	client := http.Client{}
 	rsp, _ := client.Do(req)
 
@@ -126,13 +125,12 @@ func (t *testSuite) TestGetImageJson() {
 	defer ser.Close()
 
 	reader := bytes.NewReader([]byte("just a test"))
-	req, _ := http.NewRequest("GET", ser.URL + "/v1/images/123/json", reader)
+	req, _ := http.NewRequest("GET", ser.URL+"/v1/images/123/json", reader)
 	client := http.Client{}
 	rsp, _ := client.Do(req)
 
 	t.Equal(rsp.StatusCode, 404)
 }
-
 
 func (t *testSuite) TestPutRepository() {
 	h := NewHandler(resetTmpDataDir())
@@ -140,7 +138,7 @@ func (t *testSuite) TestPutRepository() {
 	defer ser.Close()
 
 	reader := bytes.NewReader([]byte("just a test"))
-	req, _ := http.NewRequest("PUT", ser.URL + "/v1/repositories/dynport/test/", reader)
+	req, _ := http.NewRequest("PUT", ser.URL+"/v1/repositories/dynport/test/", reader)
 	client := http.Client{}
 	rsp, _ := client.Do(req)
 
