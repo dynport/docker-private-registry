@@ -40,7 +40,7 @@ func (i *Image) Ancestry() (a []string) {
 func (i *Image) Attributes() (a *ImageAttributes, err error) {
 	a = &ImageAttributes{}
 	path := i.Dir + "/json"
-	logger.Info("reading attributes from path", path)
+	logger.Debug("reading attributes from path", path)
 	if data, err := ioutil.ReadFile(path); err == nil {
 		err = json.Unmarshal(data, a)
 	}
