@@ -7,7 +7,13 @@ import (
 
 var logger = &Logger{}
 
+var (
+	GITCOMMIT string
+)
+
+
 func startServer(listenOn, dataDir string) {
+	logger.Info("using version ", GITCOMMIT)
 	logger.Info("starting server on ", listenOn)
 	logger.Info("using dataDir ", dataDir)
 	if err := http.ListenAndServe(listenOn, NewHandler(dataDir)); err != nil {
