@@ -7,7 +7,7 @@ You need to have go 1.1 installed (e.g. download from https://go.googlecode.com/
     $ git clone https://github.com/dynport/docker-private-registry.git /tmp/dpr.git
     $ cd /tmp/dpr.git
     $ make
-    $ cp bin/dpr /usr/local/bin/dpr
+    $ make install
 
 ## Test / Use
 
