@@ -12,7 +12,9 @@ You need to have go 1.1 installed (e.g. download from https://go.googlecode.com/
 ## Test / Use
 
 Currently you need to use docker build from the git repository (git clone https://github.com/dotcloud/docker.git).
-Revision `e2b8ee2` should work fine.
+Revision `e2b8ee2` should work fine. 
+
+__UPDATE:__ Seems that all versions including `b7a62f1` to work. There was a change in `e962e9e` which breaks all of it.
 
 ### Start dpr
 
