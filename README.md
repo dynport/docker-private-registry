@@ -1,30 +1,24 @@
 # Docker Private Registry
 
-## Build
+## Requirements
 
-You need to have go 1.1 installed (e.g. download from https://go.googlecode.com/files/go1.1.1.linux-amd64.tar.gz)
+Currently you need to use docker build from the git repository (git clone https://github.com/dotcloud/docker.git).
+All Revision after `e962e9e` should work fine. 
+
+## Build and Start
 
     $ git clone https://github.com/dynport/docker-private-registry.git /tmp/dpr.git
-    $ cd /tmp/dpr.git
-    $ make
-    $ make install
+    $ cd /tmp/dpr.git && cat Dockerfile | docker build -t dpr -
+    # -b mounts the local /data dir into the container, -p attaches the registry to your local port 80
+    $ docker run -b /data:/data -d -p 80:80 dpr               
 
 ## Test / Use
 
-Currently you need to use docker build from the git repository (git clone https://github.com/dotcloud/docker.git).
-Revision `e2b8ee2` should work fine. 
-
-__UPDATE:__ Seems that all versions including `b7a62f1` to work. There was a change in `e962e9e` which breaks all of it.
-
-### Start dpr
-
-    $ dpr 2>&1 | logger -i -t dpr &  # the dpr logs will be available in the local syslog (/var/log/syslog)
-
 ### Build a test image
 
-    $ docker build -t test/test - << EOF
+    $ docker build -t 127.0.0.1/test/test - << EOF
     > FROM ubuntu
-    > RUN echo world > /tmp/hello
+    > RUN echo world > /hello
     > EOF
     Uploading context 2048 bytes
     Step 1 : FROM ubuntu
@@ -37,36 +31,32 @@ __UPDATE:__ Seems that all versions including `b7a62f1` to work. There was a cha
 ### Push test image to registry
 
     $ docker push 127.0.0.1/test/test
-    The push refers to a repository [test/test] (len: 1)
+    The push refers to a repository [127.0.0.1/test/test] (len: 1)
     Processing checksums
     Sending image list
-    Pushing repository test/test to http://127.0.0.1/v1/ (1 tags)
-    2013/07/14 11:30:41 invalid character 'I' looking for beginning of value   # this does not cause a problem
-    problem
+    Pushing repository 127.0.0.1/test/test (1 tags)
+    Pushing 8dbd9e392a964056420e5d58ca5cc376ef18e2de93b5cc90e868a1bbc8318c1c
+    Buffering to disk 58313696/? (n/a)
+    Pushing 58.31 MB/58.31 MB (100%)
+    Pushing tags for rev [8dbd9e392a964056420e5d58ca5cc376ef18e2de93b5cc90e868a1bbc8318c1c] on {http://127.0.0.1/v1/repositories/test/test/tags/latest}
+    Pushing 849e352c99d4a82e5a4ac29e2f4ab15505bd55202f04a057c26df00dfffd98bd
+    Pushing 10.24 kB/10.24 kB (100%)
+    Pushing tags for rev [849e352c99d4a82e5a4ac29e2f4ab15505bd55202f04a057c26df00dfffd98bd] on {http://127.0.0.1/v1/repositories/test/test/tags/latest}
 
 ### Delete test image
 
-    $ docker rmi test/test
+    $ docker rmi 127.0.0.1/test/test
     Untagged: 702e91a586c6
     Deleted: 702e91a586c6
 
-### Validate the image no longer exists
+### Run test image
 
-    $ docker run -t -i test/test cat /hello
-    Pulling repository test/test from https://index.docker.io/v1/
-    2013/07/14 11:29:11 Internal server error: 404 trying to fetch remote history for test/test
-
-### Pull test image
-
-    $ docker pull 127.0.0.1/test/test
-    Pulling repository test/test from http://127.0.0.1/v1/
-    Pulling image 8dbd9e392a964056420e5d58ca5cc376ef18e2de93b5cc90e868a1bbc8318c1c (latest) from test/test
-    Pulling image 8eea63e7d8b29a33d84f8e6225a2039bc7dd8273213cbbebd96d7c7644aad043 (latest) from test/test
-    Pulling 8eea63e7d8b29a33d84f8e6225a2039bc7dd8273213cbbebd96d7c7644aad043 metadata
-    Pulling 8eea63e7d8b29a33d84f8e6225a2039bc7dd8273213cbbebd96d7c7644aad043 fs layer
-    Downloading 10.24 kB/10.24 kB (100%)
-
-### Test if pull worked
-
-    $ docker run -t -i test/test cat /hello
+    $ docker run -t -i 127.0.0.1/test/test cat /hello
+    Pulling repository 127.0.0.1/test/test
+    Pulling image 8dbd9e392a964056420e5d58ca5cc376ef18e2de93b5cc90e868a1bbc8318c1c (latest) from 127.0.0.1/test/test
+    Pulling image 7afcd422f7fdd07bdf430eff49a6f4235bda89129a79e9ac9fcbbbea811ef6bc (latest) from 127.0.0.1/test/test
+    Pulling 7afcd422f7fdd07bdf430eff49a6f4235bda89129a79e9ac9fcbbbea811ef6bc metadata
+    Pulling 7afcd422f7fdd07bdf430eff49a6f4235bda89129a79e9ac9fcbbbea811ef6bc fs layer
+    Downloading   276 B/  276 B (100%)
     world
+
