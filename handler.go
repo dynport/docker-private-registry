@@ -50,7 +50,7 @@ func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request, p [][]string)
 }
 
 func (h *Handler) GetRepositoryImages(w http.ResponseWriter, r *http.Request, p [][]string) {
-	repo := &Repository{h.DataDir + "/repositories/" + p[0][2]}
+	repo := &Repository{h.DataDir + "/repositories/" + r.Header.Get("Hostname")  + "/" + p[0][2]}
 	if images, err := repo.Images(); err == nil {
 		h.WriteJsonHeader(w)
 		h.WriteEndpointsHeader(w, r)
@@ -117,7 +117,7 @@ func (h *Handler) GetImageJson(w http.ResponseWriter, r *http.Request, p [][]str
 }
 
 func (h *Handler) GetRepositoryTags(w http.ResponseWriter, r *http.Request, p [][]string) {
-	repo := &Repository{h.DataDir + "/repositories/" + p[0][2]}
+	repo := &Repository{h.DataDir + "/repositories/" + r.Header.Get("Hostname") + "/" + p[0][2]}
 	tagsJson, err := json.Marshal(repo.Tags())
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
@@ -145,7 +145,7 @@ func (h *Handler) PutImageResource(w http.ResponseWriter, r *http.Request, p [][
 
 func (h *Handler) PutRepositoryTags(w http.ResponseWriter, r *http.Request, p [][]string) {
 	repoName := p[0][2]
-	path := h.DataDir + "/repositories/" + repoName + "/tags/" + p[0][3]
+	path := h.DataDir + "/repositories/" + r.Header.Get("Hostname") + "/" + repoName + "/tags/" + p[0][3]
 	err := writeFile(path, r.Body)
 	if err != nil {
 		logger.Error(err.Error())
@@ -156,7 +156,7 @@ func (h *Handler) PutRepositoryTags(w http.ResponseWriter, r *http.Request, p []
 
 func (h *Handler) PutRepositoryImages(w http.ResponseWriter, r *http.Request, p [][]string) {
 	repoName := p[0][2]
-	repo := &Repository{h.DataDir + "/repositories/" + repoName}
+	repo := &Repository{h.DataDir + "/repositories/" + r.Header.Get("Hostname") + "/" + repoName}
 	err := writeFile(repo.ImagesPath(), r.Body)
 	if err != nil {
 		logger.Error(err.Error())
@@ -172,7 +172,7 @@ func (h *Handler) PutRepository(w http.ResponseWriter, r *http.Request, p [][]st
 	w.Header().Add("X-Docker-Token", "token")
 	w.WriteHeader(http.StatusOK)
 	repoName := p[0][2]
-	repo := &Repository{h.DataDir + "/repositories/" + repoName}
+	repo := &Repository{h.DataDir + "/repositories/" + r.Header.Get("Hostname") + "/" + repoName}
 	err := writeFile(repo.IndexPath(), r.Body)
 	if err != nil {
 		logger.Error(err.Error())
