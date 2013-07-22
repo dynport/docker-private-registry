@@ -2,15 +2,14 @@
 
 ## Requirements
 
-Currently you need to use docker build from the git repository (git clone https://github.com/dotcloud/docker.git).
-All Revision after `e962e9e` should work fine. 
+You need to have docker >= 0.5.0 up and running.
 
 ## Build and Start
 
     $ git clone https://github.com/dynport/docker-private-registry.git /tmp/dpr.git
     $ cd /tmp/dpr.git && cat Dockerfile | docker build -t dpr -
-    # -b mounts the local /data dir into the container, -p attaches the registry to your local port 80
-    $ docker run -b /data:/data -d -p 80:80 dpr               
+    # -v mounts the local /data dir into the container, -p attaches the registry to your local port 80
+    $ docker run -v /data:/data -d -p 80:80 dpr
 
 ## Test / Use
 
